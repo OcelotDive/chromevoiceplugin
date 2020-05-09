@@ -53,11 +53,8 @@ let elementsDisplayed = false;
  function sendNumberMessageToContent(spokenNumber) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "number", spokenNumber: spokenNumber}, (response) => {
-     
-      });
-      
+      });     
  });
- 
  }
 
  function sendExitElementMessageToContent() {
@@ -85,7 +82,7 @@ let elementsDisplayed = false;
       else {
         tabsIds.push(tabs[tabs.length -1].id);
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "select"}, (response) => {
-       
+          console.log(response)
         
         });
         
@@ -100,7 +97,6 @@ let elementsDisplayed = false;
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
       if(tabsIds.includes(tabs[tabs.length-1].id)) {
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit select"}, (response) => {
-    
         tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
         });
       }
