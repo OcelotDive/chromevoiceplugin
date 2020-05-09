@@ -2,8 +2,8 @@
 * {
     margin: 0;
 }
-.voiceSelected {
- 
+.highlightedOnSearchRequest {
+ background-color: lightblue !important;
 
 
 }

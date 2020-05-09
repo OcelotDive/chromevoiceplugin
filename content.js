@@ -28,6 +28,41 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
     sendResponse("display number")
 });
 
+// listener for search command
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  
+  if(request.action === "search") {
+    const input = document.querySelector("form input[type='text'");
+    input.value = '';
+    input.classList.add("highlightedOnSearchRequest");
+  sendResponse({action: "search mode"});
+  getSearchInput();
+  }
+  
+});
+
+
+
+// functions
+
+function getSearchInput() {
+
+  const input = document.querySelector("form input[type='text'");
+  const form = document.querySelector("form");
+  console.warn(input);
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  
+  if(request.action === "query") {
+    input.value = request.searchQuery;
+    form.submit();
+    input.value = '';
+    input.classList.revove("highlightedOnSearchRequest");
+
+  }
+  sendResponse("query received");
+});
+}
+
 
 function listenForNumber(spokenNumber) {
   let numberLabels = Array.from(document.querySelectorAll('.numberLabel'));

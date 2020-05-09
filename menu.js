@@ -8,6 +8,7 @@ recognition.start();
 let tabsIds = [];
 let currentUrl = 'https://google.com/';
 let elementsDisplayed = false;
+let searchModeActivated = false;
    recognition.addEventListener('result', event => {
     let finalTranscript = '';
      for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -29,13 +30,22 @@ let elementsDisplayed = false;
       });
      } 
      else if (finalTranscript.includes("elements")) {
-      sendSelectElementMessageToContent()
+      sendSelectElementMessageToContent();
       elementsDisplayed = true;  
      }
 
-     else if (finalTranscript.includes("backtrack")) {
-      sendExitElementMessageToContent()
+     else if (finalTranscript.includes("clear")) {
+      sendExitElementMessageToContent();
       elementsDisplayed = false;
+     }
+
+     else if (finalTranscript.includes("search")) {
+       sendSearchMessageToContent();
+      
+     }
+
+     else if (searchModeActivated && finalTranscript) {
+      sendSearchQueryToContent(finalTranscript);
      }
      
      else if (elementsDisplayed && typeof parseInt(finalTranscript) === 'number') {
@@ -53,8 +63,30 @@ let elementsDisplayed = false;
  function sendNumberMessageToContent(spokenNumber) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "number", spokenNumber: spokenNumber}, (response) => {
+      alert(response)
       });     
  });
+ }
+
+
+ function sendSearchMessageToContent() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+      chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "search"}, (response) => {
+          searchModeActivated = true;
+       
+      
+    });
+});
+ }
+
+ function sendSearchQueryToContent(query) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "query", searchQuery: query}, (response) => {
+      if(response) {
+        searchModeActivated = false;
+      }
+    });
+  });
  }
 
  function sendExitElementMessageToContent() {
@@ -77,7 +109,7 @@ let elementsDisplayed = false;
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
       
       if(tabsIds.includes(tabs[tabs.length-1].id)) {
- 
+        return
       }
       else {
         tabsIds.push(tabs[tabs.length -1].id);
