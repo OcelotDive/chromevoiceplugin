@@ -24,8 +24,9 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
 
 // listen for number
 chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
+   //last change
   request.action === 'number' && listenForNumber(request.spokenNumber);
-    sendResponse("display number")
+    
 });
 
 // listener for search command
@@ -73,12 +74,12 @@ function listenForNumber(spokenNumber) {
 
 function addElementLabelsToPage() {
   displayLabels = true;
-  let body = Array.from(document.querySelectorAll("body *"));
+  let body = Array.from(document.querySelectorAll("a, input, .tab-content"));
 
     let filteredBody = body.filter(element => element.localName === 'a'
       || element.localName === 'input');
     console.log(filteredBody)
-    filteredBody.map((item, index, array) => {
+    body.map((item, index, array) => {
       let numberLabel = document.createElement("label");
       numberLabel.className += "numberLabel animated infinite pulse";
       numberLabel.innerHTML = index.toString();
