@@ -4,11 +4,10 @@ recognition.continuous = true;
 recognition.interimResults = true;
 recognition.start();
 
-
 let tabsIds = [];
-let currentUrl = 'https://google.com/';
 let elementsDisplayed = false;
 let searchModeActivated = false;
+
    recognition.addEventListener('result', event => {
     let finalTranscript = '';
      for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -48,10 +47,20 @@ let searchModeActivated = false;
       sendSearchQueryToContent(finalTranscript);
      }
      
-     else if (elementsDisplayed && typeof parseInt(finalTranscript) === 'number') {
+     else if (elementsDisplayed && !finalTranscript.includes("scroll down")
+     && !finalTranscript.includes("scroll up")  
+     && (typeof parseInt(finalTranscript) === 'number')) {
  
        sendNumberMessageToContent(parseInt(finalTranscript))
      }
+
+     else if (finalTranscript.includes("scroll down")) {
+       sendScrollDownMessageToContent();
+     }
+
+     else if (finalTranscript.includes("scroll up")) {
+      sendScrollUpMessageToContent();
+    }
    });
  
  recognition.addEventListener('end', recognition.start);
@@ -60,10 +69,25 @@ let searchModeActivated = false;
 
  // functions start
 
+ function sendScrollUpMessageToContent() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll up"}, (response) => {
+      console.log(response);
+      });     
+ });
+ }
+ function sendScrollDownMessageToContent() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll down"}, (response) => {
+      console.log(response);
+      });     
+ });
+ }
+
  function sendNumberMessageToContent(spokenNumber) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "number", spokenNumber: spokenNumber}, (response) => {
-      alert(response)
+      console.log(response);
       });     
  });
  }
@@ -73,7 +97,7 @@ let searchModeActivated = false;
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
       chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "search"}, (response) => {
           searchModeActivated = true;
-       
+       console.log(response);
       
     });
 });
@@ -85,6 +109,7 @@ let searchModeActivated = false;
       if(response) {
         searchModeActivated = false;
       }
+      console.log(response)
     });
   });
  }
@@ -96,10 +121,9 @@ let searchModeActivated = false;
       chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit select"}, (response) => {
   
       tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
+      console.log(response)
       });
     }
-    //may say something else later
-    else {return}
   });
 }
 
@@ -116,11 +140,9 @@ let searchModeActivated = false;
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "select"}, (response) => {
           console.log(response)
         
-        });
-        
+        });  
       }
     });
-    return;
   }
 
   function listenForChangeAfterSelectCommand() {
@@ -130,12 +152,9 @@ let searchModeActivated = false;
       if(tabsIds.includes(tabs[tabs.length-1].id)) {
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit select"}, (response) => {
         tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
+        console.log(response)
         });
       }
         });
-      
-
-   
-
 })
   }

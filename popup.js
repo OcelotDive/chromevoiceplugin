@@ -1,7 +1,7 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  const menuUrl = "chrome-extension://cjbcmhbgienoafecphjcfgopachopbna/menu.html";
+  const menuUrl = "chrome-extension://nfekfdojamhbooimjaeaplgokmfdjagg/menu.html";
 
   chrome.tabs.query({"active": true},tabs => {
     let x = tabs.filter(element => element.url === menuUrl);

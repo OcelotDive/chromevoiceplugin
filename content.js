@@ -42,9 +42,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   
 });
 
+// listen for scroll
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if(request.action === "scroll down") {
+    scroll(0, 600);
+  }
+})
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if(request.action === "scroll up") {
+    scroll(0, -600);
+  }
+})
 
 
 // functions
+
+function scroll(x,y) {
+  window.scrollBy(x,y);
+}
 
 function getSearchInput() {
 
@@ -68,23 +85,19 @@ function getSearchInput() {
 function listenForNumber(spokenNumber) {
   let numberLabels = Array.from(document.querySelectorAll('.numberLabel'));
   numberLabels.map((element, index) => {
-    index === spokenNumber ? element.parentNode.click() : null;
+    index === spokenNumber && element.parentNode.click();
   })
 }
 
 function addElementLabelsToPage() {
   displayLabels = true;
-  let body = Array.from(document.querySelectorAll("a, input, .tab-content"));
+  let elementsList = Array.from(document.querySelectorAll("a, input, .tab-content"));
 
-    let filteredBody = body.filter(element => element.localName === 'a'
-      || element.localName === 'input');
-    console.log(filteredBody)
-    body.map((item, index, array) => {
+    elementsList.map((item, index, array) => {
       let numberLabel = document.createElement("label");
       numberLabel.className += "numberLabel animated infinite pulse";
       numberLabel.innerHTML = index.toString();
-      item.prepend(numberLabel);
-      
+      item.prepend(numberLabel);    
   })
 }
 
