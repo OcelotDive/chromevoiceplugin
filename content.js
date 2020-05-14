@@ -11,21 +11,27 @@ let displayLabels = false;
 
 //listen for elements
 chrome.runtime.onMessage.addListener((request,sender,sendResponse) => { 
-  request.action === 'select' && addElementLabelsToPage();
+ if (request.action === 'select') { 
+   addElementLabelsToPage();
   sendResponse('elementsAdded');
   listenForScrollWhenLabelsOn();
+ }
   });
 
 // listen for exit select
 chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
-  request.action === 'exit select' && removeElementLabelsFromPage();
+  if(request.action === 'exit select') {
+   removeElementLabelsFromPage();
     sendResponse("exit elements");
+  }
 });
 
 // listen for number
 chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
    //last change
-  request.action === 'number' && listenForNumber(request.spokenNumber);
+  if(request.action === 'number') {
+   listenForNumber(request.spokenNumber);
+  } 
     
 });
 
@@ -45,6 +51,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // listen for scroll
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if(request.action === "scroll left") {
+    scroll(-300, 0);
+  }
+})
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if(request.action === "scroll right") {
+    scroll(300, 0);
+  }
+})
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.action === "scroll down") {
     scroll(0, 600);
   }
@@ -55,6 +73,67 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     scroll(0, -600);
   }
 })
+
+//video mode
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.warn(request)
+  if(request.action === "video mode") {
+     let video = document.querySelector('video');
+     
+       if(video !== undefined) {
+      sendResponse({action: "video mode active"});
+       }
+       else {
+         sendResponse({action: "no video"})
+       } 
+  }
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.warn(request)
+  let trimRequest = request.action.split(" ").map(e => e.trim()).filter(e => e !== "").join(" ")
+   .replace(/one/, "60")
+   .replace(/five/, "300")
+   .replace(/ten/, "600")
+   .replace(/thirty/, "30")
+   .replace(/1/, "60")
+   .replace(/5/, "300")
+   .replace(/10/, "600");
+
+  const timeReg = /\b30\b|\b60\b|\b300\b|\b600\b/;   
+  console.log(trimRequest)
+  let video = document.querySelector("video");
+
+  if(trimRequest.includes("pause")) {
+    console.log(request.action)
+    video.pause();
+  }
+
+  else if(trimRequest.includes("play")) {
+    console.log(request.action)
+    video.play();
+  }
+  
+  else if(trimRequest.includes("forward")) {
+ 
+    if(timeReg.test(trimRequest)) {
+  let timeMatch = trimRequest.match(timeReg);
+  console.log(timeMatch)
+    video.currentTime += parseInt(timeMatch[0]);
+    }
+  }
+
+  else if(trimRequest.includes("rewind")) {
+  
+     if(timeReg.test(trimRequest)) {
+   let timeMatch = trimRequest.match(timeReg);
+   console.log(timeMatch)
+     video.currentTime -= parseInt(timeMatch[0]);
+     }
+   }
+
+});
+
 
 
 // functions
@@ -74,7 +153,7 @@ function getSearchInput() {
     input.value = request.searchQuery;
     form.submit();
     input.value = '';
-    input.classList.revove("highlightedOnSearchRequest");
+    input.classList.remove("highlightedOnSearchRequest");
 
   }
   sendResponse("query received");
@@ -107,7 +186,7 @@ function listenForScrollWhenLabelsOn() {
       if(displayLabels) {
       window.requestAnimationFrame(function() {
          removeElementLabelsFromPage();
-         addElementLabelsToPage()
+         addElementLabelsToPage();
       });
     }
     else {
