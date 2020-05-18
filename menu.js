@@ -5,6 +5,7 @@ recognition.interimResults = true;
 recognition.start();
 
 let tabsIds = [];
+let browserMode = true;
 let elementsDisplayed = false;
 let searchModeActivated = false;
 let videoModeActivated = false;
@@ -41,7 +42,7 @@ setMenuId();
       chrome.tabs.update(menuId, {"active": true}, (tab) => { });
      }
 
-     else if (!elementsDisplayed && finalTranscript.includes("go to tab")) {
+     else if (browserMode && finalTranscript.includes("go to tab")) {
       
       chrome.tabs.getAllInWindow(tabs => {
         chrome.tabs.update(tabs[parseInt(lastWord) - 1].id, {"active": true}, (tab) => { });
@@ -53,6 +54,9 @@ setMenuId();
       chrome.tabs.getAllInWindow(tabs => {
         chrome.tabs.remove(tabs[tabs.length - 1].id)
       });
+      elementsDisplayed = false;
+      searchModeActivated = false;
+      videoModeActivated = false;
      } 
 
      else if (finalTranscript.includes("remove all left")) {
@@ -63,49 +67,42 @@ setMenuId();
       removeTabsEitherSide(lastWord);
     }
 
-     else if (finalTranscript.includes("elements")) {
+     else if (finalTranscript.includes("elements") && !searchModeActivated) {
       sendSelectElementMessageToContent();
-      elementsDisplayed = true;  
+      elementsDisplayed = true;
+      browserMode = false;
+      videoModeActivated = false; // this could cause trouble;
+        
      }
 
      else if (finalTranscript.includes("clear")) {
       sendExitElementMessageToContent();
       elementsDisplayed = false;
+      videoMode = false; //change 15
+      browserMode = true; //change 15
      }
 
      else if (finalTranscript.includes("search")) {
        sendSearchMessageToContent();
-      
+      elementsDisplayed = false;
+      browserMode = false;
+      sendExitElementMessageToContent();
      }
 
      else if (searchModeActivated && finalTranscript) {
       sendSearchQueryToContent(finalTranscript);
      }
      
-     else if (elementsDisplayed && !finalTranscript.includes("scroll down")
-     && !finalTranscript.includes("scroll up")  
-     && !finalTranscript.includes("scroll left")
-     && !finalTranscript.includes("scroll right")
-     && (typeof parseInt(finalTranscript) === 'number')) {
+     else if (elementsDisplayed && !finalTranscript.includes("scroll")
+     
+     && (typeof parseInt(lastWord) === 'number')) {
  
        sendNumberMessageToContent(parseInt(finalTranscript))
      }
 
-     else if (finalTranscript.includes("scroll down")) {
-       sendScrollDownMessageToContent();
+     else if (finalTranscript.includes("scroll")) {
+       sendScrollDownMessageToContent(lastWord);
      }
-
-     else if (finalTranscript.includes("scroll up")) {
-      sendScrollUpMessageToContent();
-    }
-
-    else if (finalTranscript.includes("scroll right")) {
-      sendScrollRightMessageToContent();
-    }
-
-    else if (finalTranscript.includes("scroll left")) {
-      sendScrollLeftMessageToContent();
-    }
 
     else if (finalTranscript.includes("video")) {
       if(!searchModeActivated) {
@@ -114,7 +111,7 @@ setMenuId();
     }
     else if(videoModeActivated) {
       
-        sendVideoCommandToContent(finalTranscript)
+        sendVideoCommandToContent(finalTranscript);
       
     }
    });
@@ -167,41 +164,19 @@ setMenuId();
  });
  }
 
- function sendVideoCommandToContent(lastWord) {
+ function sendVideoCommandToContent(finalTranscript) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: lastWord}, (response) => {
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "video command", transcript: finalTranscript}, (response) => {
       
       });     
  });
  }
 
- function sendScrollLeftMessageToContent() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll left"}, (response) => {
-      console.log(response);
-      });     
- });
- }
 
- function sendScrollRightMessageToContent() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll right"}, (response) => {
-      console.log(response);
-      });     
- });
- }
 
- function sendScrollUpMessageToContent() {
+ function sendScrollDownMessageToContent(word) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll up"}, (response) => {
-      console.log(response);
-      });     
- });
- }
-
- function sendScrollDownMessageToContent() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll down"}, (response) => {
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "scroll " + word}, (response) => {
       console.log(response);
       });     
  });
@@ -277,6 +252,8 @@ setMenuId();
         tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
         console.log(response)
         elementsDisplayed = false;
+        searchModeActivated = false;
+        videoModeActivated = false;
         });
       }
         });

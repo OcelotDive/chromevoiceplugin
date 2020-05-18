@@ -2,13 +2,38 @@
 * {
     margin: 0;
 }
-.highlightedOnSearchRequest {
+html {
+    scroll-behavior: smooth;
+}
+.highlightedOnSearchRequest_tvr {
  background-color: lightblue !important;
 
 
 }
 
-.numberLabel {
+.modeTabMain_tvr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 200%;
+    font-weight: bold;
+    position: fixed;
+    top: -10%;
+    left: calc(50% - 150px);
+    width: 300px;
+    height: 50px;
+    background-color: rgb(71, 70, 70);
+    opacity: 0;
+    color: #fff;
+    z-index: 9999;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 2px 2px 2px#000;
+    animation: modeTabInOut 3s ease-in-out; 
+   
+}
+
+.numberLabel_tvr {
     position: relative;
     top: 0px;
     left: 0;
@@ -24,7 +49,7 @@
     padding: 3px !important;
     color: #fff;
     font-weight: bold;
-    background-color: green;
+    background-color: blue;
     border: solid 1px #000;
     z-index: 3;
     
@@ -32,3 +57,9 @@
   
 
 
+@keyframes modeTabInOut {
+    0% {top: -10%; opacity: 0;}
+    20% {top: 0%; opacity: .5;}
+    80% {top: 0%; opacity: .5}
+    100%{top: -10%; opacity: 0;}
+}
