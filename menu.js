@@ -43,7 +43,7 @@ setMenuId();
      }
 
      else if (browserMode && finalTranscript.includes("go to tab")) {
-      
+       alert(lastWord)
       chrome.tabs.getAllInWindow(tabs => {
         chrome.tabs.update(tabs[parseInt(lastWord) - 1].id, {"active": true}, (tab) => { });
        
@@ -51,7 +51,7 @@ setMenuId();
      } 
 
      else if (finalTranscript.includes("close tab") || finalTranscript.includes("exit tab")) {
-      chrome.tabs.getAllInWindow(tabs => {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         chrome.tabs.remove(tabs[tabs.length - 1].id)
       });
       elementsDisplayed = false;
@@ -70,7 +70,7 @@ setMenuId();
      else if (finalTranscript.includes("elements") && !searchModeActivated) {
       sendSelectElementMessageToContent();
       elementsDisplayed = true;
-      browserMode = false;
+     // browserMode = false;
       videoModeActivated = false; // this could cause trouble;
         
      }
@@ -79,13 +79,13 @@ setMenuId();
       sendExitElementMessageToContent();
       elementsDisplayed = false;
       videoMode = false; //change 15
-      browserMode = true; //change 15
+     // browserMode = true; //change 15
      }
 
      else if (finalTranscript.includes("search")) {
        sendSearchMessageToContent();
       elementsDisplayed = false;
-      browserMode = false;
+     // browserMode = false;
       sendExitElementMessageToContent();
      }
 
@@ -193,6 +193,7 @@ setMenuId();
 
  function sendSearchMessageToContent() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    console.log(tabs)
       chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "search"}, (response) => {
           searchModeActivated = true;
        console.log(response);
