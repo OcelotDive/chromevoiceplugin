@@ -22,11 +22,18 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
  }
   });
 
-// listen for exit select
+// listen for exit elements
 chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
-  if(request.action === 'exit select') {
+  if(request.action === 'exit elements') {
    removeElementLabelsFromPage();
     sendResponse("exit elements");
+  }
+});
+// listen for exit search
+chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
+  if(request.action === 'exit search') {
+   clearSearch();
+    sendResponse("exit search");
   }
 });
 
@@ -38,6 +45,14 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
   } 
     
 });
+
+function clearSearch() {
+  
+  const input = document.querySelector("form input[type='text'");
+    input.value = '';
+    input.classList.remove("highlightedOnSearchRequest_tvr");
+    
+}
 
 // listener for search command
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -72,7 +87,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 //video mode
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+/*chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.warn(request)
   if(request.action === "video mode") {
     displayModeLabel("Video Mode");
@@ -85,10 +100,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
          sendResponse({action: "no video"})
        } 
   }
-});
+});*/
 // if video mode on
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if(request.action === "video command") {
+  if(request.action === "check if video command") {
   let trimRequest = request.transcript.split(" ").map(e => e.trim()).filter(e => e !== "").join(" ")
    .replace(/one/, "60")
    .replace(/five/, "300")

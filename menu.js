@@ -5,10 +5,8 @@ recognition.interimResults = true;
 recognition.start();
 
 let tabsIds = [];
-let browserMode = true;
 let elementsDisplayed = false;
 let searchModeActivated = false;
-let videoModeActivated = false;
 let menuId;
 
 function setMenuId() {
@@ -42,7 +40,7 @@ setMenuId();
       chrome.tabs.update(menuId, {"active": true}, (tab) => { });
      }
 
-     else if (browserMode && finalTranscript.includes("go to tab")) {
+     else if (finalTranscript.includes("go to tab")) {
        alert(lastWord)
       chrome.tabs.getAllInWindow(tabs => {
         chrome.tabs.update(tabs[parseInt(lastWord) - 1].id, {"active": true}, (tab) => { });
@@ -56,7 +54,6 @@ setMenuId();
       });
       elementsDisplayed = false;
       searchModeActivated = false;
-      videoModeActivated = false;
      } 
 
      else if (finalTranscript.includes("remove all left")) {
@@ -70,22 +67,21 @@ setMenuId();
      else if (finalTranscript.includes("elements") && !searchModeActivated) {
       sendSelectElementMessageToContent();
       elementsDisplayed = true;
-     // browserMode = false;
-      videoModeActivated = false; // this could cause trouble;
+   
+
         
      }
 
-     else if (finalTranscript.includes("clear")) {
+     else if (finalTranscript.includes("cancel")) {
       sendExitElementMessageToContent();
+      sendExitSearchMessageToContent();
       elementsDisplayed = false;
-      videoMode = false; //change 15
-     // browserMode = true; //change 15
+      searchModeActivated = false;
      }
 
      else if (finalTranscript.includes("search")) {
        sendSearchMessageToContent();
       elementsDisplayed = false;
-     // browserMode = false;
       sendExitElementMessageToContent();
      }
 
@@ -93,8 +89,9 @@ setMenuId();
       sendSearchQueryToContent(finalTranscript);
      }
      
-     else if (elementsDisplayed && !finalTranscript.includes("scroll")
-     
+     else if (elementsDisplayed 
+      && !finalTranscript.includes("scroll")
+    // && !finalTranscript.includes("video")
      && (typeof parseInt(lastWord) === 'number')) {
  
        sendNumberMessageToContent(parseInt(finalTranscript))
@@ -104,15 +101,22 @@ setMenuId();
        sendScrollDownMessageToContent(lastWord);
      }
 
-    else if (finalTranscript.includes("video")) {
+   /* else if (finalTranscript.includes("video")) {
+      
       if(!searchModeActivated) {
+        sendExitElementMessageToContent();
+      elementsDisplayed = false;
       sendVideoMessageToContent();
+     
       }
     }
     else if(videoModeActivated) {
       
         sendVideoCommandToContent(finalTranscript);
       
+    }*/
+    else if (typeof finalTranscript === 'string') {
+      sendCheckVideoCommandToContent(finalTranscript);
     }
    });
  
@@ -150,7 +154,7 @@ setMenuId();
 
 }
 
- function sendVideoMessageToContent() {
+ /*function sendVideoMessageToContent() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "video mode"}, (response) => {
       console.warn("this is the response", response)
@@ -162,11 +166,11 @@ setMenuId();
       }
       });     
  });
- }
+ }*/
 
- function sendVideoCommandToContent(finalTranscript) {
+ function sendCheckVideoCommandToContent(finalTranscript) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "video command", transcript: finalTranscript}, (response) => {
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "check if video command", transcript: finalTranscript}, (response) => {
       
       });     
  });
@@ -217,12 +221,25 @@ setMenuId();
   
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     if(tabsIds.includes(tabs[tabs.length-1].id)) {
-      chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit select"}, (response) => {
+      chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit elements"}, (response) => {
   
       tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
       console.log(response)
       });
     }
+  });
+}
+
+function sendExitSearchMessageToContent() {
+  
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    
+      chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit search"}, (response) => {
+  
+     
+      console.log(response)
+      });
+    
   });
 }
 
@@ -249,12 +266,11 @@ setMenuId();
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
       if(tabsIds.includes(tabs[tabs.length-1].id)) {
-        chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit select"}, (response) => {
+        chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit elements"}, (response) => {
         tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
         console.log(response)
         elementsDisplayed = false;
         searchModeActivated = false;
-        videoModeActivated = false;
         });
       }
         });
