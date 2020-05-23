@@ -71,37 +71,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.action === "scroll left") {
-    scroll(-300, 0);
+    scrollIncrement(-300, 0);
   }
   else if  (request.action === "scroll right") {
-    scroll(300, 0);
+    scrollIncrement(300, 0);
   }
   else if (request.action === "scroll down") {
-    scroll(0, 600);
+    scrollIncrement(0, 600);
   }
   else if (request.action === "scroll up") {
-    scroll(0, -600);
+    scrollIncrement(0, -600);
+  }
+  else if (request.action === "scroll top") {
+    scrollTopBottom(0, 0);
+  }
+  else if (request.action === "scroll bottom") {
+    scrollTopBottom(0,  document.body.scrollHeight);
   }
 
 })
 
 
-//video mode
-/*chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.warn(request)
-  if(request.action === "video mode") {
-    displayModeLabel("Video Mode");
-     let video = document.querySelector('video');
-     
-       if(video !== undefined) {
-      sendResponse({action: "video mode active"});
-       }
-       else {
-         sendResponse({action: "no video"})
-       } 
-  }
-});*/
-// if video mode on
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.action === "check if video command") {
   let trimRequest = request.transcript.split(" ").map(e => e.trim()).filter(e => e !== "").join(" ")
@@ -193,8 +183,12 @@ function testForIframesInsteadOfVideo() {
      }
    }
 
-function scroll(x,y) {
+function scrollIncrement(x,y) {
   window.scrollBy(x,y);
+}
+
+function scrollTopBottom(x,y) {
+  window.scrollTo(x,y);
 }
 
 function getSearchInput() {

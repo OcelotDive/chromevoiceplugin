@@ -1,24 +1,17 @@
 
+let tabsIdsWithElementsDisplayed = [];
+let elementsAreDisplayed = false;
+let searchModeActivated = false;
+let menuId;
+
 const recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
 recognition.interimResults = true;
 recognition.start();
 
-let tabsIds = [];
-let elementsDisplayed = false;
-let searchModeActivated = false;
-let menuId;
 
-function setMenuId() {
-chrome.tabs.getAllInWindow(tabs => {
-  tabs.map(tab => {
-    if(tab.title === "Voice for Youtube") {
-      menuId = tab.id;
-    } 
-  })
-});
-}
-setMenuId();
+getMainMenuId();
+
    recognition.addEventListener('result', event => {
     let finalTranscript = '';
     let lastWord = '';
@@ -52,7 +45,7 @@ setMenuId();
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         chrome.tabs.remove(tabs[tabs.length - 1].id)
       });
-      elementsDisplayed = false;
+      elementsAreDisplayed = false;
       searchModeActivated = false;
      } 
 
@@ -66,7 +59,7 @@ setMenuId();
 
      else if (finalTranscript.includes("elements") && !searchModeActivated) {
       sendSelectElementMessageToContent();
-      elementsDisplayed = true;
+      elementsAreDisplayed = true;
    
 
         
@@ -75,13 +68,13 @@ setMenuId();
      else if (finalTranscript.includes("cancel")) {
       sendExitElementMessageToContent();
       sendExitSearchMessageToContent();
-      elementsDisplayed = false;
+      elementsAreDisplayed = false;
       searchModeActivated = false;
      }
 
      else if (finalTranscript.includes("search")) {
        sendSearchMessageToContent();
-      elementsDisplayed = false;
+      elementsAreDisplayed = false;
       sendExitElementMessageToContent();
      }
 
@@ -89,9 +82,8 @@ setMenuId();
       sendSearchQueryToContent(finalTranscript);
      }
      
-     else if (elementsDisplayed 
+     else if (elementsAreDisplayed 
       && !finalTranscript.includes("scroll")
-    // && !finalTranscript.includes("video")
      && (typeof parseInt(lastWord) === 'number')) {
  
        sendNumberMessageToContent(parseInt(finalTranscript))
@@ -101,20 +93,7 @@ setMenuId();
        sendScrollDownMessageToContent(lastWord);
      }
 
-   /* else if (finalTranscript.includes("video")) {
-      
-      if(!searchModeActivated) {
-        sendExitElementMessageToContent();
-      elementsDisplayed = false;
-      sendVideoMessageToContent();
-     
-      }
-    }
-    else if(videoModeActivated) {
-      
-        sendVideoCommandToContent(finalTranscript);
-      
-    }*/
+  
     else if (typeof finalTranscript === 'string') {
       sendCheckVideoCommandToContent(finalTranscript);
     }
@@ -125,6 +104,17 @@ setMenuId();
  listenForChangeAfterSelectCommand();
 
  // functions start
+
+ // get main menu id
+ function getMainMenuId() {
+  chrome.tabs.getAllInWindow(tabs => {
+    tabs.map(tab => {
+      if(tab.title === "Voice for Youtube") {
+        menuId = tab.id;
+      } 
+    })
+  });
+  }
 
 
  function removeTabsEitherSide(direction) {
@@ -153,20 +143,6 @@ setMenuId();
  });
 
 }
-
- /*function sendVideoMessageToContent() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "video mode"}, (response) => {
-      console.warn("this is the response", response)
-      if(response.action === "video mode active") {
-        videoModeActivated = true;
-      }
-      else {
-        videoModeActivated = false;
-      }
-      });     
- });
- }*/
 
  function sendCheckVideoCommandToContent(finalTranscript) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
@@ -220,10 +196,10 @@ setMenuId();
  function sendExitElementMessageToContent() {
   
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    if(tabsIds.includes(tabs[tabs.length-1].id)) {
+    if(tabsIdsWithElementsDisplayed.includes(tabs[tabs.length-1].id)) {
       chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit elements"}, (response) => {
   
-      tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
+      tabsIdsWithElementsDisplayed = tabsIdsWithElementsDisplayed.filter(element => element != tabs[tabs.length-1].id);
       console.log(response)
       });
     }
@@ -248,11 +224,11 @@ function sendExitSearchMessageToContent() {
     
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
       
-      if(tabsIds.includes(tabs[tabs.length-1].id)) {
+      if(tabsIdsWithElementsDisplayed.includes(tabs[tabs.length-1].id)) {
         return
       }
       else {
-        tabsIds.push(tabs[tabs.length -1].id);
+        tabsIdsWithElementsDisplayed.push(tabs[tabs.length -1].id);
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "select"}, (response) => {
           console.log(response)
         
@@ -265,11 +241,11 @@ function sendExitSearchMessageToContent() {
     
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-      if(tabsIds.includes(tabs[tabs.length-1].id)) {
+      if(tabsIdsWithElementsDisplayed.includes(tabs[tabs.length-1].id)) {
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit elements"}, (response) => {
-        tabsIds = tabsIds.filter(element => element != tabs[tabs.length-1].id);
+        tabsIdsWithElementsDisplayed = tabsIdsWithElementsDisplayed.filter(element => element != tabs[tabs.length-1].id);
         console.log(response)
-        elementsDisplayed = false;
+        elementsAreDisplayed = false;
         searchModeActivated = false;
         });
       }
