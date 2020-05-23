@@ -1,17 +1,24 @@
 
-let tabsIdsWithElementsDisplayed = [];
-let elementsAreDisplayed = false;
-let searchModeActivated = false;
-let menuId;
-
 const recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
 recognition.interimResults = true;
 recognition.start();
 
+let tabsIdsWithElementsDisplayed = [];
+let elementsAreDisplayed = false;
+let searchModeActivated = false;
+let menuId;
 
-getMainMenuId();
-
+function setMenuId() {
+chrome.tabs.getAllInWindow(tabs => {
+  tabs.map(tab => {
+    if(tab.title === "Voice for Youtube") {
+      menuId = tab.id;
+    } 
+  })
+});
+}
+setMenuId();
    recognition.addEventListener('result', event => {
     let finalTranscript = '';
     let lastWord = '';
@@ -57,12 +64,13 @@ getMainMenuId();
       removeTabsEitherSide(lastWord);
     }
 
+    else if (finalTranscript.includes("refresh")) {
+      sendRefreshMessageToContent();
+    }
+
      else if (finalTranscript.includes("elements") && !searchModeActivated) {
       sendSelectElementMessageToContent();
-      elementsAreDisplayed = true;
-   
-
-        
+      elementsAreDisplayed = true;   
      }
 
      else if (finalTranscript.includes("cancel")) {
@@ -84,6 +92,7 @@ getMainMenuId();
      
      else if (elementsAreDisplayed 
       && !finalTranscript.includes("scroll")
+    // && !finalTranscript.includes("video")
      && (typeof parseInt(lastWord) === 'number')) {
  
        sendNumberMessageToContent(parseInt(finalTranscript))
@@ -104,17 +113,6 @@ getMainMenuId();
  listenForChangeAfterSelectCommand();
 
  // functions start
-
- // get main menu id
- function getMainMenuId() {
-  chrome.tabs.getAllInWindow(tabs => {
-    tabs.map(tab => {
-      if(tab.title === "Voice for Youtube") {
-        menuId = tab.id;
-      } 
-    })
-  });
-  }
 
 
  function removeTabsEitherSide(direction) {
@@ -143,6 +141,16 @@ getMainMenuId();
  });
 
 }
+
+
+function sendRefreshMessageToContent(finalTranscript) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "refresh"}, (response) => {
+      
+      });     
+ });
+ }
+
 
  function sendCheckVideoCommandToContent(finalTranscript) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
@@ -199,7 +207,7 @@ getMainMenuId();
     if(tabsIdsWithElementsDisplayed.includes(tabs[tabs.length-1].id)) {
       chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit elements"}, (response) => {
   
-      tabsIdsWithElementsDisplayed = tabsIdsWithElementsDisplayed.filter(element => element != tabs[tabs.length-1].id);
+        tabsIdsWithElementsDisplayed = tabsIdsWithElementsDisplayed.filter(element => element != tabs[tabs.length-1].id);
       console.log(response)
       });
     }
@@ -243,7 +251,7 @@ function sendExitSearchMessageToContent() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
       if(tabsIdsWithElementsDisplayed.includes(tabs[tabs.length-1].id)) {
         chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "exit elements"}, (response) => {
-        tabsIdsWithElementsDisplayed = tabsIdsWithElementsDisplayed.filter(element => element != tabs[tabs.length-1].id);
+          tabsIdsWithElementsDisplayed = tabsIdsWithElementsDisplayed.filter(element => element != tabs[tabs.length-1].id);
         console.log(response)
         elementsAreDisplayed = false;
         searchModeActivated = false;

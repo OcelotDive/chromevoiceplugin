@@ -67,8 +67,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   
 });
 
-// listen for scroll
+// refresh 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if(request.action === "refresh") {
+    window.location.reload();
+  }
+});
 
+// listen for scroll
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.action === "scroll left") {
     scrollIncrement(-300, 0);
