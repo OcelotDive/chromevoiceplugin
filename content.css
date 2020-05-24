@@ -34,6 +34,9 @@ html {
 }
 
 .numberLabel_tvr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     top: 0px;
     left: 0;
@@ -52,6 +55,8 @@ html {
     z-index: 3;
     
   }
+
+
   
 
 

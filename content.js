@@ -2,6 +2,11 @@
 //let lastScrollPos = 0;
 let displayLabels = false;
 
+
+
+
+
+
 function displayModeLabel(mode) {
 const tabMain = document.createElement('div')
 tabMain.classList.add("modeTabMain_tvr");
@@ -114,8 +119,24 @@ console.log(trimRequest)
  
    // https://www.youtube.com/embed/1GPYnoG_nkE?feature=oembed
    // https://www.youtube.com/watch?v=1GPYnoG_nkE&feature=emb_title
+   // ytp-ad-overlay-container
   const timeReg = /\b30\b|\b60\b|\b300\b|\b600\b/;   
+
+  if(trimRequest.includes("remove ad")) {
+    const ad = document.querySelector(".ytp-ad-overlay-container"), 
+    adParent = ad.parentElement;
+     if(ad && adParent != "undefined"){
+    adParent.removeChild(ad);
+     }
+  }
   
+  if(trimRequest.includes("cinema mode")) {
+  const evt = new KeyboardEvent('keydown', {'keyCode':84, 'which':84});
+  document.dispatchEvent (evt);
+
+   
+  }
+
   if(trimRequest.includes("pause")) {
     video.pause();
   }
