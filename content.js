@@ -129,6 +129,18 @@ console.log(trimRequest)
     adParent.removeChild(ad);
      }
   }
+
+  if(trimRequest.includes("restart")) {
+    const evt = new KeyboardEvent('keydown', {'keyCode':48, 'which':48});
+  document.dispatchEvent (evt);
+  }
+
+  if(trimRequest.includes("captions")) {
+    const evt = new KeyboardEvent('keydown', {'keyCode':67, 'which':67});
+  document.dispatchEvent (evt);
+  }
+
+ 
   
   if(trimRequest.includes("cinema mode")) {
   const evt = new KeyboardEvent('keydown', {'keyCode':84, 'which':84});
