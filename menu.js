@@ -1,7 +1,7 @@
 
 const recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
-recognition.interimResults = true;
+recognition.interimResults = false;
 recognition.start();
 
 let tabsIdsWithElementsDisplayed = [];
@@ -23,6 +23,7 @@ setMenuId();
     let finalTranscript = '';
     let lastWord = '';
      for (let i = event.resultIndex; i < event.results.length; ++i) {
+      
        if (event.results[i].isFinal) {
          finalTranscript = event.results[i][0].transcript.toLowerCase();
          lastWord = finalTranscript.split(" ");
@@ -105,7 +106,10 @@ setMenuId();
   
     else if (typeof finalTranscript === 'string') {
       sendCheckVideoCommandToContent(finalTranscript);
+      
+     
     }
+    sendTranscriptToDisplayInContent(finalTranscript);
    });
  
  recognition.addEventListener('end', recognition.start);
@@ -114,6 +118,14 @@ setMenuId();
 
  // functions start
 
+ function sendTranscriptToDisplayInContent(finalTranscript) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[tabs.length - 1].id,
+      {action: "transcript to display", transcript: finalTranscript}, (response) => {
+      
+      });     
+ });
+ }
 
  function removeTabsEitherSide(direction) {
   let pivot;

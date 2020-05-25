@@ -4,6 +4,10 @@
     "name": "VR Tutorial Helper Plugin",
     "description": "This extension will control browser and tutitional videos via VR",
     "version": "1.0",
+
+    "web_accessible_resources" : [
+      "assets/*.png"
+      ],
   
     "browser_action": {
      "default_icon": "icon.png",

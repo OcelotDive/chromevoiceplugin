@@ -13,15 +13,16 @@ html {
 
 .modeTabMain_tvr {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
-    font-size: 200%;
+    flex-direction: row-reverse;
+    font-size: 12px;
     font-weight: bold;
     position: fixed;
     top: -10%;
     left: calc(50% - 150px);
     width: 300px;
-    height: 50px;
+    min-height: 50px;
     background-color: rgb(71, 70, 70);
     opacity: 0;
     color: #fff;
@@ -30,7 +31,34 @@ html {
     border-bottom-right-radius: 10px;
     box-shadow: 2px 2px 2px#000;
     animation: modeTabInOut 3s ease-in-out; 
-   
+    padding: 5px; 
+}
+
+.transcriptParagraph_tvr {
+    margin: 10px;
+    margin-left: 30px;
+}
+
+.hearingImageContainer_tvr {
+    position: relative;
+    align-self: start;
+    width: 26px;
+    height: 26px;
+    margin: 3px;
+    border-radius: 50%;
+    box-shadow: 3px 3px 3px #000;
+}
+
+.hearingImage_tvr {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+  
+    background-color: #fff; 
+
 }
 
 .numberLabel_tvr {
@@ -62,7 +90,7 @@ html {
 
 @keyframes modeTabInOut {
     0% {top: -10%; opacity: 0;}
-    20% {top: 0%; opacity: .5;}
-    80% {top: 0%; opacity: .5}
+    5% {top: 0%; opacity: .5;}
+    90% {top: 0%; opacity: .5}
     100%{top: -10%; opacity: 0;}
 }

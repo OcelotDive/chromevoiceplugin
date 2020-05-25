@@ -7,12 +7,33 @@ let displayLabels = false;
 
 
 
-function displayModeLabel(mode) {
-const tabMain = document.createElement('div')
+function displayTranscriptLabel(transcript) {
+
+const tabMain = document.createElement('div');
+const transcriptParagraph = document.createElement('p');
+const imageContainer = document.createElement('div');
+const image = document.createElement('img');
+const imagePath = chrome.runtime.getURL('./assets/hearing.png');
+
+image.src = imagePath;
+
 tabMain.classList.add("modeTabMain_tvr");
-tabMain.innerHTML = mode;
+imageContainer.classList.add('hearingImageContainer_tvr')
+image.classList.add('hearingImage_tvr');
+transcriptParagraph.classList.add('transcriptParagraph_tvr');
+
+imageContainer.appendChild(image);
+transcriptParagraph.innerHTML = transcript;
+tabMain.appendChild(transcriptParagraph)
+tabMain.appendChild(imageContainer);
+
 const body = document.querySelector("body");
 body.append(tabMain);
+
+setTimeout(()=> {
+  body.removeChild(tabMain);
+}, 3500);
+
 }
 
 //repeat listen on scroll
@@ -102,8 +123,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 })
 
-
+// check for video command
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.warn(request.transcript)
   if(request.action === "check if video command") {
   let trimRequest = request.transcript.split(" ").map(e => e.trim()).filter(e => e !== "").join(" ")
    .replace(/one/, "60")
@@ -128,6 +150,10 @@ console.log(trimRequest)
      if(ad && adParent != "undefined"){
     adParent.removeChild(ad);
      }
+  }
+
+  if(trimRequest.includes("skip")) {
+    video.currentTime += 60;
   }
 
   if(trimRequest.includes("restart")) {
@@ -201,9 +227,18 @@ console.log(trimRequest)
      video.currentTime -= parseInt(timeMatch[0]);
      }
    }
+
+   
   }
+  
 });
 
+// receive transcript to display
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if(request.action === "transcript to display") {
+    displayTranscriptLabel(request.transcript);
+  }
+});
 
 
 // functions
@@ -231,7 +266,6 @@ function scrollTopBottom(x,y) {
 }
 
 function getSearchInput() {
-displayModeLabel("Search Mode");
   const input = document.querySelector("form input[type='text'");
   const form = document.querySelector("form");
   console.warn(input);
@@ -258,7 +292,6 @@ function listenForNumber(spokenNumber) {
 
 function addElementLabelsToPage(displayModeBool) {
   if(displayModeBool !== false) {
-  displayModeLabel("Elements Mode");
   }
   displayLabels = true;
   let elementsList = Array.from(document.querySelectorAll("a, input, .tab-content"));
