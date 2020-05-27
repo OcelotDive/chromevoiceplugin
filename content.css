@@ -6,10 +6,13 @@ html {
     scroll-behavior: smooth;
 }
 .highlightedOnSearchRequest_tvr {
- background-color: lightblue !important;
-
-
+ border: solid lightblue !important;
+ border-radius: 10px;
 }
+
+
+ 
+  
 
 .modeTabMain_tvr {
     display: flex;
@@ -42,17 +45,17 @@ html {
 .hearingImageContainer_tvr {
     position: relative;
     align-self: start;
-    width: 26px;
-    height: 26px;
+    width: 37px;
+    height: 45px;
     margin: 3px;
     border-radius: 50%;
-    box-shadow: 3px 3px 3px #000;
+    
 }
 
 .hearingImage_tvr {
     position: absolute;
-    width: 26px;
-    height: 26px;
+    width: 37px;
+    height: 45px;
     top: 0;
     left: 0;
     border-radius: 50%;

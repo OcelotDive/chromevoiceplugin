@@ -2,7 +2,7 @@
     "manifest_version": 2,
   
     "name": "VR Tutorial Helper Plugin",
-    "description": "This extension will control browser and tutitional videos via VR",
+    "description": "This extension will control browser and tuitional videos via VR",
     "version": "1.0",
 
     "web_accessible_resources" : [
@@ -10,8 +10,8 @@
       ],
   
     "browser_action": {
-     "default_icon": "icon.png",
-     "default_popup": "popup.html"
+     "default_icon": "icon.png"
+     
     },
     "content_scripts": [{
       "js": ["content.js"],
@@ -29,7 +29,8 @@
      
      
      ],
-     "options_page": "menu.html"
+     "options_page": "menu.html",
+     "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
     
   }
   

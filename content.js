@@ -13,7 +13,7 @@ const tabMain = document.createElement('div');
 const transcriptParagraph = document.createElement('p');
 const imageContainer = document.createElement('div');
 const image = document.createElement('img');
-const imagePath = chrome.runtime.getURL('./assets/hearing.png');
+const imagePath = chrome.runtime.getURL('./assets/mic.png');
 
 image.src = imagePath;
 
@@ -142,7 +142,26 @@ console.log(trimRequest)
    // https://www.youtube.com/embed/1GPYnoG_nkE?feature=oembed
    // https://www.youtube.com/watch?v=1GPYnoG_nkE&feature=emb_title
    // ytp-ad-overlay-container
-  const timeReg = /\b30\b|\b60\b|\b300\b|\b600\b/;   
+  const timeReg = /\b30\b|\b60\b|\b300\b|\b600\b/; 
+  
+  if(trimRequest.includes("save video")) {
+    const videoUrl = window.location.href;
+    const storage = window.localStorage;
+    const currentTimePlayed = document.querySelector('.ytp-time-current').innerHTML;
+    const currentVideoPlayed = document.querySelector('h1.title').textContent;
+
+    const video = {
+      name: currentVideoPlayed,
+      currentTime: currentTimePlayed,
+      url: videoUrl
+    }
+
+    storage.setItem(currentVideoPlayed,JSON.stringify(video));
+    console.warn(storage);
+
+    console.log(storage.getItem(currentVideoPlayed))
+
+  }
 
   if(trimRequest.includes("remove ad")) {
     const ad = document.querySelector(".ytp-ad-overlay-container"), 
