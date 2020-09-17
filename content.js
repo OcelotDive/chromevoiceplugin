@@ -36,7 +36,7 @@ setTimeout(()=> {
 
 }
 
-//repeat listen on scroll
+
  
 
 //listen for elements
@@ -53,8 +53,12 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
   if(request.action === 'exit elements') {
    removeElementLabelsFromPage();
     sendResponse("exit elements");
+    
   }
 });
+
+
+
 // listen for exit search
 chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
   if(request.action === 'exit search') {
@@ -93,6 +97,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   
 });
 
+
+
 // refresh 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.action === "refresh") {
@@ -123,10 +129,80 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 })
 
+
+/*function removeAdBanner() {
+  const ad = document.querySelector(".ytp-ad-module");
+  
+   if(ad !== null){
+ let adParent = ad.parentElement;
+  adParent.removeChild(ad);
+   }
+  }
+*/
+
+function removeAdBanner() {
+  
+  let html5video = document.querySelector(".html5-video-player");
+  if(html5video !== null) {
+   // html5video.classList.remove("ad-showing");
+  //  html5video.classList.remove("ad-created");
+  //  html5video.classList.remove("ad-interupt");
+  //  html5video.classList.remove("ytp-ad-overlay-open");
+   html5video.className = "html5-video-player" //ytp-transparent playing-mode ytp-autohide ytp-exp-marker-tooltip playing-mode ytp-small-mode ytp-iv-drawer-enabled ytp-autohide";
+  }
+}
+
+
+function checkVideoPlaying() {
+  let  video = document.querySelector("video");
+
+  if(video !== null && video.currentTime > 0 && video.paused === false && video.ended === false) {
+    removeAdBanner();
+  }
+}
+
+/*function reacessConfigs(configObject) {
+
+  if(configObject.bannerAdSwitch === true) {
+    removeAdBanner();
+  }
+}
+*/
+
+
+
+    
+ /* chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+   
+       if(changeInfo.status === 'complete' && tab.status === 'complete' && tab.url.indexOf("https://www.youtube.com/watch") !== -1) {
+         removeAdBanner();
+         console.warn("removed ad banner");
+       }
+     
+        
+      
+       
+});*/
+
+
+
+
+/*chrome.runtime.addEventListener('popstate', (e) => {
+  if(window.location.href.indexOf("https://www.youtube.com/watch") !== -1) {
+    removeAdBanner();
+    console.warn("removed ad banner")
+  }
+})*/
+
 // check for video command
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.warn(request.transcript)
+  
+  
+    
+  
+  
   if(request.action === "check if video command") {
+    
   let trimRequest = request.transcript.split(" ").map(e => e.trim()).filter(e => e !== "").join(" ")
    .replace(/one/, "60")
    .replace(/five/, "300")
@@ -148,8 +224,9 @@ console.log(trimRequest)
     const videoUrl = window.location.href;
     const storage = window.localStorage;
     const currentTimePlayed = document.querySelector('.ytp-time-current').innerHTML;
-    const currentVideoPlayed = document.querySelector('h1.title').textContent;
-
+    let currentVideoPlayed = document.querySelector('h1.title').textContent;
+    if(currentVideoPlayed.length > 25) currentVideoPlayed = currentVideoPlayed.substring(0, 25) + "..";
+    
     const video = {
       name: currentVideoPlayed,
       currentTime: currentTimePlayed,
@@ -157,22 +234,18 @@ console.log(trimRequest)
     }
 
     storage.setItem(currentVideoPlayed,JSON.stringify(video));
-    console.warn(storage);
 
-    console.log(storage.getItem(currentVideoPlayed))
-
+    sendResponse({video: video});
   }
 
   if(trimRequest.includes("remove ad")) {
-    const ad = document.querySelector(".ytp-ad-overlay-container"), 
-    adParent = ad.parentElement;
-     if(ad && adParent != "undefined"){
-    adParent.removeChild(ad);
-     }
+
+   removeAdBanner();
+  
   }
 
   if(trimRequest.includes("skip")) {
-    video.currentTime += 60;
+    video.currentTime += 600;
   }
 
   if(trimRequest.includes("restart")) {
@@ -249,18 +322,26 @@ console.log(trimRequest)
 
    
   }
-  
+ 
 });
 
 // receive transcript to display
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.action === "transcript to display") {
     displayTranscriptLabel(request.transcript);
+    
+    
+
   }
 });
 
-
 // functions
+
+
+
+
+
+
 
 function testForIframesInsteadOfVideo() {
   let iframes = Array.from(document.querySelectorAll("iframe"));

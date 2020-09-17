@@ -29,3 +29,18 @@
     margin-top: 5%;
 
 }
+
+.savedVideoList {
+    list-style: none;
+}
+
+.videoListItem {
+    margin-bottom: 15px;
+    white-space: nowrap;
+}
+
+.btn-warning {
+   padding: 3px;
+   margin-right: 10px;
+   
+}

@@ -19,6 +19,10 @@ chrome.tabs.getAllInWindow(tabs => {
 });
 }
 setMenuId();
+
+
+  addExistingVideosToSavedListOnStart();
+
    recognition.addEventListener('result', event => {
     let finalTranscript = '';
     let lastWord = '';
@@ -110,6 +114,7 @@ setMenuId();
      
     }
     sendTranscriptToDisplayInContent(finalTranscript);
+
    });
  
  recognition.addEventListener('end', recognition.start);
@@ -121,7 +126,7 @@ setMenuId();
  function sendTranscriptToDisplayInContent(finalTranscript) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,
-      {action: "transcript to display", transcript: finalTranscript}, (response) => {
+      {action: "transcript to display", transcript: finalTranscript, configObject: getConfigs()}, (response) => {
       
       });     
  });
@@ -155,7 +160,7 @@ setMenuId();
 }
 
 
-function sendRefreshMessageToContent(finalTranscript) {
+function sendRefreshMessageToContent() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "refresh"}, (response) => {
       
@@ -165,14 +170,104 @@ function sendRefreshMessageToContent(finalTranscript) {
 
 
  function sendCheckVideoCommandToContent(finalTranscript) {
+   
+  
+   
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "check if video command", transcript: finalTranscript}, (response) => {
-      
+      if(response.video) {
+        console.log(window.localStorage)
+        addNewVideoToSavedList(response.video);
+
+      }
       });     
  });
  }
+ getConfigs()
+ function getConfigs() {
+  const bannerAdSwitch = document.querySelector("#customSwitch1BannerAds");
 
 
+  const configObject = {
+    bannerAdSwitch: bannerAdSwitch.checked
+  }
+  return configObject;
+ }
+
+ removeVideoOnClick()
+
+ function removeVideoOnClick() {
+  
+   const list = document.querySelector(".savedVideoList");
+   const storage = window.localStorage;
+   
+   list.addEventListener('click', (event) => {
+    if(event.target.className === "btn btn-warning") {
+      const listItem = event.target.parentNode;
+      
+      const videoName = event.target.nextElementSibling.textContent;
+      
+      console.log(videoName)
+      storage.removeItem(videoName);
+      console.log(storage)
+      listItem.parentNode.removeChild(listItem);
+    }
+   })
+ }
+
+ function addExistingVideosToSavedListOnStart() {
+  const storage = window.localStorage;
+ const videos = Object.values(storage).map(JSON.parse);
+
+ videos.map(video => {
+  
+  const list = document.querySelector(".savedVideoList");
+  const videoListItem = document.createElement('li');
+  videoListItem.className = "videoListItem";
+  const videoLink = document.createElement("a");
+  videoLink.href = video.url;
+  videoLink.target = "_blank";
+
+  
+    videoLink.innerHTML = video.name;
+ 
+  const removeVideoButton = document.createElement('div');
+  removeVideoButton.className = "btn btn-warning";
+  removeVideoButton.innerHTML = "X";
+   videoListItem.appendChild(removeVideoButton);
+  videoListItem.appendChild(videoLink);
+ 
+  list.appendChild(videoListItem);
+ 
+ })
+
+
+
+  
+
+ }
+
+
+ function addNewVideoToSavedList(video) {
+  const storage = window.localStorage;
+  const list = document.querySelector(".savedVideoList");
+  const videoListItem = document.createElement('li');
+  const videoLink = document.createElement("a");
+  videoLink.href = video.url;
+  videoLink.target = "_blank";
+  
+    videoLink.innerHTML = video.name;
+  
+  const removeVideoButton = document.createElement('div');
+  removeVideoButton.className = "btn btn-warning";
+  removeVideoButton.innerHTML = "X";
+   videoListItem.appendChild(removeVideoButton);
+  videoListItem.appendChild(videoLink);
+  videoListItem.appendChild(videoLink);
+  list.appendChild(videoListItem);
+  storage.setItem(video.name,JSON.stringify(video))
+  console.warn(storage)
+ }
 
  function sendScrollDownMessageToContent(word) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
@@ -270,5 +365,18 @@ function sendExitSearchMessageToContent() {
         });
       }
         });
-})
+});
   }
+
+
+function listenForPageLoad() {
+  chrome.tabs.onUpdated.addListener(function (tabId , info) {
+    if (info.status === 'complete') {
+      chrome.tabs.sendMessage(tabs[tabs.length - 1].id,{action: "page load"}, (response)=> {
+
+      })
+    }
+  });
+}
+
+
