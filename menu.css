@@ -1,22 +1,37 @@
-
 .mainMenuContainer {
     position: absolute;
     width: 100%;
     height: 100%;
     padding: 5%;
-    background: #4776E6;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #8E54E9, #4776E6);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #8E54E9, #4776E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+    background: #4776E6;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #8E54E9, #4776E6);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #8E54E9, #4776E6);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
 .jumbotron {
     height: 100%;
     box-shadow: 3px 3px 3px;
+    overflow: hidden;
 }
+
+header {
+    margin: 0 2% 0 2%;
+}
+
+#homeTabContent {
+    height: 96%;
+    overflow-Y: scroll;
+}
+
 .tabsContainer {
     position: relative;
     margin: 2%;
+    height: 90%;
 }
+
 .accordionContainer {
     width: 50%;
     height: 50%;
@@ -27,7 +42,6 @@
     bottom: 0;
     margin: auto;
     margin-top: 5%;
-
 }
 
 .savedVideoList {
@@ -40,7 +54,6 @@
 }
 
 .btn-warning {
-   padding: 3px;
-   margin-right: 10px;
-   
+    padding: 3px;
+    margin-right: 10px;
 }

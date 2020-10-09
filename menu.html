@@ -1,87 +1,173 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <link rel="stylesheet" href="bootstrap.min.css">
-      <link rel="stylesheet" href="menu.css">
-      <title>Voice for Youtube</title>  
 
-    </head>
-    <body>
-      <div class="mainMenuContainer">
-      <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-5">Main Menu</h1>
+<head>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="menu.css">
 
-        </div>
-      
-        <section class="tabsContainer">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-          </li>
-        </ul>
-        <div class="tab-content" id="homeTabContent">
-          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <section class="accordionContainer">
-              <div id="accordion">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h5 class="mb-0">
-                      <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Configuration and Settings.
+
+    <title>Voice for Youtube</title>
+
+
+</head>
+
+<body>
+    <div class="mainMenuContainer">
+
+        <div class="jumbotron jumbotron-fluid">
+            <header>
+                <h1 class="display-5">Main Menu</h1>
+
+            </header>
+
+            <section class="tabsContainer">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Voice Commands</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="homeTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <section class="accordionContainer">
+                            <div id="accordion">
+
+                                <div class="card">
+                                    <div class="card-header" id="headingZero">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
+                                              <h6>Tab Commands</h6>
                       </button>
-                    </h5>
-                  </div>
-              
-                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                    <div class="card-body" id="homeTabConfig">
-                     
-              
-                      <div class="form-group">
-                        <div class="custom-control custom-switch">
-                          <input type="checkbox" class="custom-control-input" id="customSwitch1BannerAds" checked="">
-                          <label class="custom-control-label" for="customSwitch1BannerAds">Remove banner ads from youtube videos</label>
-                        </div>
-                        </div>
-                    </div>
-                  </div>
-                </div>
+                                        </h5>
+                                    </div>
 
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h5 class="mb-0">
-                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <div id="collapseZero" class="collapse" aria-labelledby="headingZero" data-parent="#accordion">
+                                        <div class="card-body" id="commandTabConfig">
+                                            <p><b>Open Tab :</b> Opens new tab.</p>
+                                            <p><b>Goto Tab [number] :</b>Navigates to tab number.</p>
+                                            <p><b></b>Close Tab / Exit Tab : </b> Closes current tab.</p>
+                                            <p><b>Close Tab [number] :</b> Closes the specified tab by position number.</p>
+                                            <p><b>Remove All Left :</b> Closes all tabs to the left of the active extension menu.</p>
+                                            <p><b>Remove All Right :</b> Closes all tabs to the right of the active extension menu.</p>
+                                            <p><b>Scroll [direction] :</b> Scrolls in the specified direction (up/down/left/right/top/bottom).</p>
+                                            <p><b>Refresh :</b> Refreshes current tab.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                            <h6>Search / Select Commands</h6>
+                    </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body" id="commandTabConfig">
+
+                                            <p><b>Search :</b> Highlights searchbar and activates search mode.</p>
+                                            <i><p>When search mode is active the next spoken command will be searched for.</p></i>
+                                            <p><b>Elements :</b> Sets a number selector next to each link on the page</p>
+                                            <i><p>When elements are displayed the next number spoken will navigate to chosen selection.</p></i>
+                                            <p><b>Cancel :</b> Returns to default from search or elements mode.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="card">
+                                    <div class="card-header" id="headingTwo">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                          <h6>Video Commands</h6>
+                  </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                        <div class="card-body" id="commandTabConfig">
+
+                                            <p><b>Play :</b> Plays a previously paused video.</p>
+                                            <p><b>Pause :</b> Pause current video.</p>
+                                            <p><b>Forward [time]:</b> Fast forwards by the selected time.</p>
+                                            <i><p>[time] can equal "thirty seconds", "one minute", "five minutes", "ten minutes", "thirty minutes".</p></i>
+                                            <p><b>Rewind [time]:</b> Rewinds by the selected time.</p>
+                                            <i><p>[time] can equal "thirty seconds", "one minute", "five minutes", "ten minutes", "thirty minutes".</p></i>
+                                            <p><b>Restart :</b> Restarts video playback from beginning.</p>
+                                            <p><b>Mute :</b> Mutes video sound.</p>
+                                            <p><b>Sound :</b> Un-mutes video sound.</p>
+                                            <p><b>Volume Up :</b> Increases volume by incremental amount.</p>
+                                            <p><b>Volume Down :</b> Decreases volume by incremental amount.</p>
+                                            <p><b>Captions :</b> Turns on subtitles.</p>
+                                            <p><b>Cinema Mode :</b> Enters youtube cinema mode.</p>
+                                            <p><b>Skip :</b> Skip advert playing within video.</p>
+                                            <p><b>Remove ad :</b> Removes ad popups within video.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!--div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <h6>Configuration and Settings.</h6>
+                      </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body" id="homeTabConfig">
+
+
+                                            <div class="form-group">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="customSwitch1BannerAds" checked="">
+                                                    <label class="custom-control-label" for="customSwitch1BannerAds">Remove banner ads from youtube videos</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div-->
+
+                                <!--div class="card">
+                                    <div class="card-header" id="headingTwo">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Saved Videos.
                       </button>
-                    </h5>
-                  </div>
-                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                    <div class="card-body" id="homeTabSavedVideos">
-                      <ul class="savedVideoList">
-                       
-                      </ul>
+                                        </h5>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                        <div class="card-body" id="homeTabSavedVideos">
+                                            <ul class="savedVideoList">
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div-->
+
+
+                            </div>
+                        </section>
                     </div>
-                  </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
                 </div>
-               
-              
-              </div>
-              </section>
-          </div>
-          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-        </div>
-        </section>   
-        
+            </section>
 
 
-<!--section class="accordionContainer">
+
+            <!--section class="accordionContainer">
 <div id="accordion">
   <div class="card">
     <div class="card-header" id="headingOne">
@@ -136,13 +222,14 @@
   </div>
 </div>
 </section-->
-</div>
-</div>
-        <script src="jquery_3.51.min.js"></script>
-        <script src="popper.js"></script>
-        <script src="bootstrap.bundle.min.js"></script>
-        <script src="menu.js"></script>
-        <script src="content.js"></script>
-        
-    </body>
+        </div>
+    </div>
+    <script src="jquery_3.51.min.js"></script>
+    <script src="popper.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+    <script src="menu.js"></script>
+    <script src="content.js"></script>
+
+</body>
+
 </html>
