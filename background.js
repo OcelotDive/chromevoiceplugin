@@ -11,12 +11,6 @@ chrome.browserAction.onClicked.addListener(function (activeTab) {
   window.location.reload();
 });
 
-chrome.runtime.onInstalled.addListener(function () {
-  setInterval(() => {
-    console.log("test");
-  }, 1000);
-});
-
 /*chrome.runtime.onMessage.addListener( function(request,sender,sendResponse)
 {
    
