@@ -106,8 +106,8 @@ function sendTranscriptToDisplayInContent(finalTranscript) {
       tabs[tabs.length - 1].id,
       {
         action: "transcript to display",
-        transcript: finalTranscript,
-        configObject: getConfigs(),
+        transcript: finalTranscript
+        
       },
       (response) => {}
     );
@@ -156,6 +156,9 @@ function sendCheckVideoCommandToContent(finalTranscript) {
       tabs[tabs.length - 1].id,
       { action: "check if video command", transcript: finalTranscript },
       (response) => {
+        if(!response.video) {
+          return;
+        }
         if (response.video) {
           console.log(window.localStorage);
           addNewVideoToSavedList(response.video);
@@ -164,28 +167,7 @@ function sendCheckVideoCommandToContent(finalTranscript) {
     );
   });
 }
-/*getConfigs();
 
-function getConfigs() {
-  const bannerAdSwitch = document.querySelector("#customSwitch1BannerAds");
-  if (bannerAdSwitch.checked) {
-    console.log(bannerAdSwitch);
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(
-        tabs[tabs.length - 1].id,
-        { action: "removead" },
-        (response) => {
-          console.log(response);
-        }
-      );
-    });
-  }
-  const configObject = {
-    bannerAdSwitch: bannerAdSwitch.checked,
-  };
-  return configObject;
-}
-*/
 removeVideoOnClick();
 
 function removeVideoOnClick() {

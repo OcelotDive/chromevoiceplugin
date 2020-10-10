@@ -29,18 +29,7 @@ function displayTranscriptLabel(transcript) {
 }
 
 //test
-const bannerAdInterval = setInterval(() => {
-  getConfigs();
-}, 2000);
 
-function getConfigs() {
-  const bannerAdSwitch = document.querySelector("#customSwitch1BannerAds");
-  if (bannerAdSwitch.checked) {
-    console.log("checked");
-  } else {
-    console.log("un-checked");
-  }
-}
 
 //listen for elements
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -116,66 +105,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-/*function removeAdBanner() {
-  const ad = document.querySelector(".ytp-ad-module");
-  
-   if(ad !== null){
- let adParent = ad.parentElement;
-  adParent.removeChild(ad);
-   }
-  }
-*/
+
 
 function removeAdBanner() {
   let html5video = document.querySelector(".html5-video-player");
   if (html5video !== null) {
-    // html5video.classList.remove("ad-showing");
-    //  html5video.classList.remove("ad-created");
-    //  html5video.classList.remove("ad-interupt");
-    //  html5video.classList.remove("ytp-ad-overlay-open");
+     html5video.classList.remove("ad-showing");
+    html5video.classList.remove("ad-created");
+      html5video.classList.remove("ad-interupt");
+      html5video.classList.remove("ytp-ad-overlay-open");
     html5video.className = "html5-video-player"; //ytp-transparent playing-mode ytp-autohide ytp-exp-marker-tooltip playing-mode ytp-small-mode ytp-iv-drawer-enabled ytp-autohide";
   }
 }
 
-function checkVideoPlaying() {
-  let video = document.querySelector("video");
 
-  if (
-    video !== null &&
-    video.currentTime > 0 &&
-    video.paused === false &&
-    video.ended === false
-  ) {
-    removeAdBanner();
-  }
-}
 
-/*function reacessConfigs(configObject) {
-
-  if(configObject.bannerAdSwitch === true) {
-    removeAdBanner();
-  }
-}
-*/
-
-/* chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-   
-       if(changeInfo.status === 'complete' && tab.status === 'complete' && tab.url.indexOf("https://www.youtube.com/watch") !== -1) {
-         removeAdBanner();
-         console.warn("removed ad banner");
-       }
-     
-        
-      
-       
-});*/
-
-/*chrome.runtime.addEventListener('popstate', (e) => {
-  if(window.location.href.indexOf("https://www.youtube.com/watch") !== -1) {
-    removeAdBanner();
-    console.warn("removed ad banner")
-  }
-})*/
 
 // check for video command
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
